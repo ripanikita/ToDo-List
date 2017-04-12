@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ToDo List</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>
+    <script src="EventEmitter.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div id='list'></div>
+
+    <script type="text/babel">			
+		var TASKS = JSON.parse(localStorage.getItem("tasks"));
+		if(TASKS == null){TASKS = []};
+		var count = TASKS.length;
+		window.ee = new EventEmitter();
+		
+		var Add = React.createClass({
+			getInitialState: function() {
+				return {
+					btnIsDisabled: true
+				};
+			},
+			componentDidMount: function() {
+				ReactDOM.findDOMNode(this.refs.newTask).focus();
+			},
+			onBtnClickHandler: function() {
+				var textEl = ReactDOM.findDOMNode(this.refs.newTask);
+				var newTask = ReactDOM.findDOMNode(this.refs.newTask).value;
+				count = Math.floor(Math.random( ) * (9999));
+				var item = [{
+					id: count,
+					name: newTask,
+					status: false
+				}];
+				window.ee.emit('Tasks.add', item);
+				textEl.value = '';
+				this.setState({btnIsDisabled: true});
+				ReactDOM.findDOMNode(this.refs.newTask).focus();
+			},
+			onCheckEmpty: function() {
+				this.setState({btnIsDisabled: false});
+			},
+            render: function() {
+                return (
+                    <div className="newTask">
+                        <input type="text" placeholder="What you need to do?" className="new-field" ref="newTask" onInput={this.onCheckEmpty}/>
+						<button className="add-btn" onClick={this.onBtnClickHandler} ref='alert_button' disabled={this.state.btnIsDisabled}>Add</button>
+                    </div>
+                );
+            }
+        });
+        var Task = React.createClass({
+			getInitialState: function() {
+				return {
+					checked: false
+				};
+			},
+			componentDidMount: function() {
+				if (this.props.status==true){
+					this.setState({checked: true})
+				} else {
+					this.setState({checked: false})
+				}
+			},
+			checkDone: function() {
+				this.setState({checked: !(this.state.checked)});
+				var taskes = JSON.parse(localStorage.getItem("tasks"));
+				var y = this.props.id;
+				function search(){
+					for(var i=0; i < taskes.length; i++){
+						if(taskes[i].id == y){
+							break;	
+						}
+					}	
+					return i;
+				};
+				var i = search();
+				var currentTask = taskes[i];
+				currentTask.status = !currentTask.status;
+				taskes[i] = currentTask;
+				var serialObj = JSON.stringify(taskes);
+				localStorage.setItem("tasks", serialObj);
+				TASKS = JSON.parse(localStorage.getItem("tasks"));
+			},
+			deleteTask: function() {
+				var taskes = JSON.parse(localStorage.getItem("tasks"));
+				var y = this.props.id;
+				function search(){
+					for(var i=0; i < taskes.length; i++){
+						if(taskes[i].id == y){
+							break;	
+						}
+					}	
+					return i;
+				};
+				var i = search();
+				taskes.splice(i, 1);				
+				var item = taskes;
+				window.ee.emit('Tasks.delete', item);
+			},
+            render: function() {
+				var checked = this.state.checked; 
+                return (
+                    <li className={'task ' + (checked ? 'checkedLi': '')}>
+                        <img className={'task-image ' + (checked ? 'checked': '')} onClick={this.checkDone}/>
+                        <div className="task-name"> {this.props.name} </div>
+						<div className="delete" onClick={this.deleteTask}></div>
+                    </li>
+                );
+            }
+        });      
+		var TaskList = React.createClass({
+			getInitialState: function() {
+                return {
+                    showTasks: TASKS
+                };
+            },
+			componentDidMount: function() {
+				var self = this;
+				window.ee.addListener('Tasks.delete', function(item) {
+					var serialObj = JSON.stringify(item);
+					self.setState({showTasks: item});
+					localStorage.setItem("tasks", serialObj);
+					TASKS = JSON.parse(localStorage.getItem("tasks"));
+				});
+				window.ee.addListener('Tasks.add', function(item) {
+					var nextTasks = item.concat(self.state.showTasks);
+					self.setState({showTasks: nextTasks});
+					var serialObj = JSON.stringify(nextTasks);
+					localStorage.setItem("tasks", serialObj);
+					TASKS = JSON.parse(localStorage.getItem("tasks"));
+				});
+				window.ee.addListener('Tasks.filter', function(filter_item) {					
+					var filterQuery = filter_item;
+					var filteredTasks;
+					if (filterQuery == '0') {
+						filteredTasks = TASKS;
+					} 
+					if (filterQuery == '1') {
+						filteredTasks = TASKS.filter(function(el) {
+							var searchValue = el.status;
+							return searchValue == false;
+						}); 
+					} 			
+					if (filterQuery == '2') {
+						filteredTasks = TASKS.filter(function(el) {
+							var searchValue = el.status;
+							return searchValue == true;
+						}); 
+					} 										
+					self.setState({showTasks: filteredTasks});
+				});
+			},
+			componentWillUnmount: function() {
+				window.ee.removeListener('Tasks.delete');
+				window.ee.removeListener('Tasks.add');
+				window.ee.removeListener('Tasks.filter');
+			},	
+            render: function() {
+                return (
+                    <div className="tasks">
+                        <ul className="task-list">
+                            {
+                               this.state.showTasks.map(function(el) {
+                                    return <Task
+                                        key={el.id}
+                                        id={el.id}
+                                        name={el.name}
+                                        status={el.status}
+                                    />;
+                               })
+                            }
+                        </ul>
+                    </div>
+                );
+            }
+        });
+		
+		var MenuExample = React.createClass({
+			getInitialState: function(){
+				return { focused: 0 };
+			},
+			filterTask: function(filter_item) {
+				this.setState({focused: filter_item});
+				window.ee.emit('Tasks.filter', filter_item);
+			},
+			render: function() {
+				var self = this;
+				return (
+					<div className="selector">
+                        <ul>{ this.props.items.map(function(m, index){        
+						var style = '';
+						if(self.state.focused == index){style = 'choosen';}
+						return <li className={style} onClick={self.filterTask.bind(self, index)}>{m}</li>;
+						}) }
+						</ul>
+					</div>
+				);
+			}
+		});		
+		
+		var App = React.createClass({	
+			render: function() {
+				return (
+					<div className="app">
+						<Add />
+						<TaskList />
+						<MenuExample items={ ['All', 'New', 'Completed'] } />
+					</div>			
+				);
+			}
+		});
+
+        ReactDOM.render(
+            <App />,
+            document.getElementById("list")
+        );
+    </script>
+</body>
+</html>

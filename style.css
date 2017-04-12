@@ -1,0 +1,90 @@
+.tasks, .newTask , .app{
+	width: 400px;
+	margin: 0 auto;
+	font-family: sans-serif;
+}
+.new-field {
+	width: 100%;
+	padding: 10px;
+	font-size: 16px;
+}
+.task-list {
+	padding: 0;
+	width: 100%;
+}
+.task {
+	width: 100%;
+	padding: 5px;
+	border-bottom: 1px dotted grey;
+	display: flex; 
+	flex-flow: column wrap;
+	resize: both;
+	flex-direction: row;
+	justify-content: Flex-start;
+}
+.task-image {
+	width: 20px;
+	height: 20px;
+	border: 2px solid black;
+	border-radius: 15px;
+    margin: 5px;
+	cursor: pointer;
+}
+.task-image:hover{
+	background-color: #C4EDC4;
+}
+.task-name {
+	width: calc(100% - 75px);
+	font-size: 20px;
+	font-weight: bold;
+	margin: 5px 0;
+	padding-left: 5px;
+}
+.delete{
+	width: 24px;
+	height: 24px;
+	background: #f6d654 url(img/delete.png) no-repeat;
+    margin: 5px;
+	cursor: pointer;
+	opacity: 0.5;
+}
+.delete:hover {
+	opacity: 1;
+}
+.checked, .checked:hover {
+	background-color: green;
+}
+.checkedLi{
+	text-decoration: line-through;
+	color: grey;
+}
+.none {
+	display: none !important;
+}
+.new-field{
+	width:70%;
+	margin: 0 15px 0 0;
+}
+.add-btn{
+	width:20%;
+	height: 40px;
+}
+.selector{
+	color:grey;
+}
+.selector ul {
+	text-align:center;
+}
+.selector ul {
+	margin: 0;
+}
+.selector ul li {
+	display: inline;
+	margin: 5px 15px;
+	cursor: poinetr;
+	font-size: 20px;
+	cursor: pointer;
+}
+.choosen{
+	color: black;
+}
