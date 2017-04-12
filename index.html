@@ -180,7 +180,7 @@
             }
         });
 		
-		var MenuExample = React.createClass({
+		var Menu = React.createClass({
 			getInitialState: function(){
 				return { focused: 0 };
 			},
@@ -207,9 +207,9 @@
 			render: function() {
 				return (
 					<div className="app">
+						<Menu items={ ['All', 'New', 'Completed'] } />
 						<Add />
-						<TaskList />
-						<MenuExample items={ ['All', 'New', 'Completed'] } />
+						<TaskList />						
 					</div>			
 				);
 			}
