@@ -63,11 +63,7 @@
 					this.setState({checked: true})
 				} else {
 					this.setState({checked: false})
-				}
-			},
-			checkDone: function() {
-				this.setState({checked: !(this.state.checked)});
-				var taskes = JSON.parse(localStorage.getItem("tasks"));
+				};
 				var y = this.props.id;
 				function search(){
 					for(var i=0; i < taskes.length; i++){
@@ -78,6 +74,10 @@
 					return i;
 				};
 				var i = search();
+			},
+			checkDone: function() {
+				this.setState({checked: !(this.state.checked)});
+				var taskes = JSON.parse(localStorage.getItem("tasks"));
 				var currentTask = taskes[i];
 				currentTask.status = !currentTask.status;
 				taskes[i] = currentTask;
@@ -87,16 +87,6 @@
 			},
 			deleteTask: function() {
 				var taskes = JSON.parse(localStorage.getItem("tasks"));
-				var y = this.props.id;
-				function search(){
-					for(var i=0; i < taskes.length; i++){
-						if(taskes[i].id == y){
-							break;	
-						}
-					}	
-					return i;
-				};
-				var i = search();
 				taskes.splice(i, 1);				
 				var item = taskes;
 				window.ee.emit('Tasks.delete', item);
