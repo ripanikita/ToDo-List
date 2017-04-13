@@ -15,7 +15,6 @@
     <script type="text/babel">			
 		var TASKS = JSON.parse(localStorage.getItem("tasks"));
 		if(TASKS == null){TASKS = []};
-		var count = TASKS.length;
 		window.ee = new EventEmitter();
 		
 		var Add = React.createClass({
@@ -30,9 +29,9 @@
 			onBtnClickHandler: function() {
 				var textEl = ReactDOM.findDOMNode(this.refs.newTask);
 				var newTask = ReactDOM.findDOMNode(this.refs.newTask).value;
-				count = Math.floor(Math.random( ) * (9999));
+				id = Math.floor(Math.random( ) * (9999));
 				var item = [{
-					id: count,
+					id: id,
 					name: newTask,
 					status: false
 				}];
