@@ -47,7 +47,7 @@
                 return (
                     <div className="newTask">
                         <input type="text" placeholder="What you need to do?" className="new-field" ref="newTask" onInput={this.onCheckEmpty}/>
-						<button className="add-btn" onClick={this.onBtnClickHandler} ref='alert_button' disabled={this.state.btnIsDisabled}>Add</button>
+			<button className="add-btn" onClick={this.onBtnClickHandler} ref='alert_button' disabled={this.state.btnIsDisabled}>Add</button>
                     </div>
                 );
             }
@@ -107,7 +107,7 @@
                     <li className={'task ' + (checked ? 'checkedLi': '')}>
                         <img className={'task-image ' + (checked ? 'checked': '')} onClick={this.checkDone}/>
                         <div className="task-name"> {this.props.name} </div>
-						<div className="delete" onClick={this.deleteTask}></div>
+			<div className="delete" onClick={this.deleteTask}></div>
                     </li>
                 );
             }
