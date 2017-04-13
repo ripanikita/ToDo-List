@@ -74,6 +74,7 @@
 					return i;
 				};
 				var i = search();
+				console.log(i);
 			},
 			checkDone: function() {
 				this.setState({checked: !(this.state.checked)});
@@ -84,12 +85,14 @@
 				var serialObj = JSON.stringify(taskes);
 				localStorage.setItem("tasks", serialObj);
 				TASKS = JSON.parse(localStorage.getItem("tasks"));
+				console.log('done '+i);
 			},
 			deleteTask: function() {
 				var taskes = JSON.parse(localStorage.getItem("tasks"));
 				taskes.splice(i, 1);				
 				var item = taskes;
 				window.ee.emit('Tasks.delete', item);
+				console.log('delete '+i);
 			},
             render: function() {
 				var checked = this.state.checked; 
