@@ -30,7 +30,7 @@
 			onBtnClickHandler: function() {
 				var textEl = ReactDOM.findDOMNode(this.refs.newTask);
 				var newTask = ReactDOM.findDOMNode(this.refs.newTask).value;
-				id = Math.floor(Math.random( ) * (9999));
+				var id = Math.floor(Math.random( ) * (9999));
 				var item = [{
 					id: id,
 					name: newTask,
