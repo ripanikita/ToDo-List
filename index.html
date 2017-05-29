@@ -29,11 +29,10 @@
 			},
 			onBtnClickHandler: function() {
 				var textEl = ReactDOM.findDOMNode(this.refs.newTask);
-				var newTask = ReactDOM.findDOMNode(this.refs.newTask).value;
 				var id = +new Date();
 				var item = [{
 					id: id,
-					name: newTask,
+					name: textEl.value,
 					status: false
 				}];
 				window.ee.emit('Tasks.add', item);
